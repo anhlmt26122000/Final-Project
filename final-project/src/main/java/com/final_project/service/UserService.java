@@ -3,6 +3,8 @@ package com.final_project.service;
 import com.final_project.dto.UserCreationRequest;
 import com.final_project.dto.UserUpdateRequest;
 import com.final_project.entity.User;
+import com.final_project.exception.AppException;
+import com.final_project.exception.ErrorCode;
 import com.final_project.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,7 +19,7 @@ public class UserService {
     public User createUser(UserCreationRequest request){
         User user = new User();
         if(userRepository.findByUsername(request.getUsername()).isPresent()){
-            throw new RuntimeException("Username already exists");
+            throw new AppException(ErrorCode.USERNAME_EXISTED);
         }
         user.setUsername(request.getUsername());
         user.setPassword(request.getPassword());
