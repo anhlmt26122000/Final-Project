@@ -1,4 +1,5 @@
-package com.final_project.dto;
+package com.final_project.dto.request;
+
 
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -10,10 +11,7 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
-public class UserCreationRequest {
-    @Size(min=1, message = "USERNAME_NULL")
-    String username;
-
+public class UserUpdateRequest {
     @Size(min = 8, message = "PASSWORD_AT_LEAST_8")
     String password;
 
