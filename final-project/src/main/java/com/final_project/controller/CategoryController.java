@@ -1,6 +1,6 @@
 package com.final_project.controller;
 
-import com.final_project.dto.request.CategoryCreationRequest;
+import com.final_project.dto.request.CategoryRequest;
 import com.final_project.dto.response.ApiResponse;
 import com.final_project.entity.Category;
 import com.final_project.service.CategoryService;
@@ -17,7 +17,7 @@ public class CategoryController {
     private CategoryService categoryService;
 
     @PostMapping
-    ApiResponse<Category> createCategory(@RequestBody @Valid CategoryCreationRequest request){
+    ApiResponse<Category> createCategory(@RequestBody @Valid CategoryRequest request){
         ApiResponse<Category> response = new ApiResponse<>();
         response.setResult(categoryService.createCategory(request));
         return response;
@@ -35,5 +35,18 @@ public class CategoryController {
         ApiResponse<Category> response = new ApiResponse<>();
         response.setResult(categoryService.getCategory(name));
         return response;
+    }
+
+    @PutMapping("/{categoryID}")
+    ApiResponse<Category> updateCategory(@PathVariable("categoryID") String categoryID, @RequestBody @Valid CategoryRequest request){
+        ApiResponse<Category> response = new ApiResponse<>();
+        response.setResult(categoryService.updateCategory(categoryID, request));
+        return response;
+    }
+
+    @DeleteMapping("/{categoryID}")
+    ApiResponse<String> deleteCategory(@PathVariable("categoryID") String categoryID){
+        categoryService.deleteCategory(categoryID);
+        return new ApiResponse<>(200, "Category deleted", null);
     }
 }

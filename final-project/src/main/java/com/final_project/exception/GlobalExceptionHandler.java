@@ -12,13 +12,13 @@ import java.util.Objects;
 public class GlobalExceptionHandler {
 
     //other exception
-    @ExceptionHandler(value = Exception.class)
-    ResponseEntity<ApiResponse> handleRuntimeException(RuntimeException e){
-        ApiResponse response = new ApiResponse();
-        response.setCode(ErrorCode.UNKNOWN_ERROR.getCode());
-        response.setMessage(ErrorCode.UNKNOWN_ERROR.getMessage());
-        return ResponseEntity.badRequest().body(response);
-    }
+//    @ExceptionHandler(value = Exception.class)
+//    ResponseEntity<ApiResponse> handleRuntimeException(RuntimeException e){
+//        ApiResponse response = new ApiResponse();
+//        response.setCode(ErrorCode.UNKNOWN_ERROR.getCode());
+//        response.setMessage(ErrorCode.UNKNOWN_ERROR.getMessage());
+//        return ResponseEntity.badRequest().body(response);
+//    }
 
     //EXCEPTION existed username
     @ExceptionHandler(value = AppException.class)

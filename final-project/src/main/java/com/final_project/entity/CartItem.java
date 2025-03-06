@@ -1,6 +1,5 @@
 package com.final_project.entity;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -8,24 +7,30 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
-import java.util.List;
-
 @Entity
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
-@Table(name = "category")
+@Table(name = "cart_items")
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
-public class Category {
+public class CartItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    String name;
-    String description;
-    String image;
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    Product product;
 
+    int quantity;
+
+    @ManyToOne
+    @JoinColumn(name = "cart_id")
     @JsonIgnore
-    @OneToMany(mappedBy = "category")
-    List<Product> products;
+    Cart cart;
+
+    public CartItem(Product product, int quantity, Cart cart) {
+        this.product = product;
+        this.quantity = quantity;
+        this.cart = cart;
+    }
 }
