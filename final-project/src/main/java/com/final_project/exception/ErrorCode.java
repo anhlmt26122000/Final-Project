@@ -23,7 +23,8 @@ public enum ErrorCode {
     CATEGORYID_NULL(1012,"Category id cannot be null"),
     PRODUCT_NOT_EXISTED(1013,"Product not existed"),
 
-    CART_ITEM_NOT_EXISTED(1014, "Cart item not existed")
+    CART_ITEM_NOT_EXISTED(1014, "Cart item not existed"),
+    WRONG_PASSWORD(1015, "Wrong password")
     ;
 
     private int code;

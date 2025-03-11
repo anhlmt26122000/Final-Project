@@ -21,19 +21,19 @@ public class UserService {
     private UserRepository userRepository;
 
     public User createUser(UserCreationRequest request){
-        User user = new User();
+        //encrypt password
+        PasswordEncoder passwordEncoder= new BCryptPasswordEncoder(5);
         if(userRepository.findByUsername(request.getUsername()).isPresent()){
             throw new AppException(ErrorCode.USERNAME_EXISTED);
         }
-        user.setUsername(request.getUsername());
-        //encrypt password
-        PasswordEncoder passwordEncoder= new BCryptPasswordEncoder(5);
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
-
-        user.setEmail(request.getEmail());
-        user.setFirstName(request.getFirstName());
-        user.setLastName(request.getLastName());
-        user.setAddress(request.getAddress());
+        User user = User.builder()
+                .username(request.getUsername())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .email(request.getEmail())
+                .firstName(request.getFirstName())
+                .lastName(request.getLastName())
+                .address(request.getAddress())
+                        .build();
         return userRepository.save(user);
     }
 

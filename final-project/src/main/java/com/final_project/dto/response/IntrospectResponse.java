@@ -1,6 +1,5 @@
 package com.final_project.dto.response;
 
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,8 +13,6 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @RequiredArgsConstructor
 @Builder
-public class ApiResponse <T> {
-    int code =200;
-    String message;
-    T result;
+public class IntrospectResponse {
+    boolean valid;
 }
