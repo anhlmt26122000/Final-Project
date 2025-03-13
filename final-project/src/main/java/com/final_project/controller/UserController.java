@@ -3,6 +3,7 @@ package com.final_project.controller;
 import com.final_project.dto.response.ApiResponse;
 import com.final_project.dto.request.UserCreationRequest;
 import com.final_project.dto.request.UserUpdateRequest;
+import com.final_project.dto.response.UserResponse;
 import com.final_project.entity.User;
 import com.final_project.service.UserService;
 import jakarta.validation.Valid;
@@ -19,31 +20,36 @@ public class UserController {
     private UserService userService;
 
     @PostMapping
-    ApiResponse<User> createUser(@RequestBody @Valid UserCreationRequest request){
-        ApiResponse<User> response = new ApiResponse<>();
-        response.setResult(userService.createUser(request));
-        return response;
+    UserResponse createUser(@RequestBody @Valid UserCreationRequest request){
+        return userService.createUser(request);
     }
 
     @GetMapping
-    List<User> getUsers(){
+    public List<UserResponse> getUsers() {
         return userService.getUsers();
     }
 
     @GetMapping("/{username}")
-    User getUser(@PathVariable("username") String username){
+    UserResponse getUser(@PathVariable("username") String username){
         return userService.getUser(username);
     }
 
+    @GetMapping("/myInfo")
+    UserResponse getMyInfo(){
+        return userService.getMyInfo();
+    }
+
     @PutMapping("/{userID}")
-    User updateUser(@PathVariable("userID") String userID, @RequestBody UserUpdateRequest request){
+    UserResponse updateUser(@PathVariable("userID") String userID, @RequestBody UserUpdateRequest request){
         return userService.updateUser(userID, request);
     }
 
     @DeleteMapping("/{userID}")
-    String deleteUser(@PathVariable("userID") String userID){
+    ApiResponse<String> deleteUser(@PathVariable("userID") String userID){
+        ApiResponse<String> response = new ApiResponse<>();
         userService.deleteUser(userID);
-        return "User deleted";
+        response.setResult("User deleted");
+        return response;
     }
 
     @GetMapping("/page")

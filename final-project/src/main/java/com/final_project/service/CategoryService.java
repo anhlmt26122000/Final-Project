@@ -4,24 +4,29 @@ import com.final_project.dto.request.CategoryRequest;
 import com.final_project.entity.Category;
 import com.final_project.exception.AppException;
 import com.final_project.exception.ErrorCode;
+import com.final_project.mapper.CategoryMapper;
 import com.final_project.repository.CategoryRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Slf4j
 @Service
+@RequiredArgsConstructor
+@FieldDefaults(makeFinal = true,level = lombok.AccessLevel.PRIVATE)
 public class CategoryService {
-    @Autowired
-    private CategoryRepository categoryRepository;
+    CategoryRepository categoryRepository;
+    CategoryMapper categoryMapper;
     public Category createCategory(CategoryRequest request){
-        Category category=new Category();
+        //Map request -> Category
+        Category category=categoryMapper.toCategory(request);
         if(categoryRepository.findCategoriesByName(request.getName()).isPresent()){
             throw new AppException(ErrorCode.CATEGORY_EXISTED);
         }
-        category.setName(request.getName());
-        category.setDescription(request.getDescription());
-        category.setImage(request.getImage());
         return categoryRepository.save(category);
     }
 
@@ -37,9 +42,8 @@ public class CategoryService {
     public Category updateCategory(String categoryID, CategoryRequest request){
         Category category = categoryRepository.findById(categoryID).orElseThrow(()->
                 new AppException(ErrorCode.CATEGORY_NOT_EXISTED));
-        category.setName(request.getName());
-        category.setDescription(request.getDescription());
-        category.setImage(request.getImage());
+        //Map request -> Category
+        categoryMapper.updateCategory(category,request);
         return categoryRepository.save(category);
     }
 

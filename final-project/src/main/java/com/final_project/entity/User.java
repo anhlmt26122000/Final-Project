@@ -1,25 +1,30 @@
 package com.final_project.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
+import java.util.Set;
 
 @Entity
-@Getter @Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
-    private String username;
-    private String password;
-    private String email;
-    private String firstName;
-    private String lastName;
-    private String address;
+    String id;
+    String username;
+    String password;
+    String email;
+    String firstName;
+    String lastName;
+    String address;
+
+    @ManyToMany
+    Set<Role> roles;
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    private Cart cart;
+    Cart cart;
 
 }

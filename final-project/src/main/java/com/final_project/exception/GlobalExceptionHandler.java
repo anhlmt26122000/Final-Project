@@ -20,7 +20,7 @@ public class GlobalExceptionHandler {
 //        return ResponseEntity.badRequest().body(response);
 //    }
 
-    //EXCEPTION existed username
+    //EXCEPTION
     @ExceptionHandler(value = AppException.class)
     ResponseEntity<ApiResponse> handleAppException(AppException e){
         ErrorCode errorCode = e.getErrorCode();

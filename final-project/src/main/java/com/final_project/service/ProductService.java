@@ -6,19 +6,23 @@ import com.final_project.entity.Product;
 import com.final_project.exception.AppException;
 import com.final_project.exception.ErrorCode;
 
+import com.final_project.mapper.ProductMapper;
 import com.final_project.repository.CategoryRepository;
 import com.final_project.repository.ProductRepository;
+import lombok.AllArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@FieldDefaults(level = lombok.AccessLevel.PRIVATE)
+@AllArgsConstructor
 public class ProductService {
-    @Autowired
-    private ProductRepository productRepository;
-    @Autowired
-    private CategoryRepository categoryRepository;
+    ProductRepository productRepository;
+    CategoryRepository categoryRepository;
+    ProductMapper productMapper;
 
     public Product createProduct(ProductRequest request){
         //get category by id
@@ -40,16 +44,10 @@ public class ProductService {
 
         // Định dạng số thứ tự thành 6 chữ số
         String productCode = String.format("%s_%06d", categoryCode, newNumber);
-        // Tạo sản phẩm mới
-        Product product = new Product();
+        // Map request -> Product
+        Product product = productMapper.toProduct(request);
         product.setCode(productCode);
-        product.setName(request.getName());
-        product.setDescription(request.getDescription());
-        product.setImage(request.getImage());
-        product.setPrice(request.getPrice());
-        product.setStock(request.getStock());
         product.setCategory(category);
-
         return productRepository.save(product);
     }
 
@@ -67,12 +65,9 @@ public class ProductService {
                 new AppException(ErrorCode.PRODUCT_NOT_EXISTED));
         Category category=categoryRepository.findById(String.valueOf(request.getCategoryId())).orElseThrow(()->
                 new AppException(ErrorCode.CATEGORY_NOT_EXISTED));
-        product.setName(request.getName());
-        product.setDescription(request.getDescription());
-        product.setImage(request.getImage());
-        product.setPrice(request.getPrice());
-        product.setStock(request.getStock());
-        product.setCategory(category);
+
+        //Map request -> Product
+        productMapper.updateProduct(product,request);
         return productRepository.save(product);
     }
     public void deleteProduct(String id){

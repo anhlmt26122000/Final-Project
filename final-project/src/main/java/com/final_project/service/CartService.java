@@ -18,17 +18,10 @@ import java.util.Optional;
 
 @Service
 public class CartService {
-    @Autowired
-    private CartRepository cartRepository;
-
-    @Autowired
-    private CartItemRepository cartItemRepository;
-
-    @Autowired
-    private ProductRepository productRepository;
-
-    @Autowired
-    private UserRepository userRepository;
+    CartRepository cartRepository;
+    CartItemRepository cartItemRepository;
+    ProductRepository productRepository;
+    UserRepository userRepository;
 
     // Hàm tạo giỏ hàng mới nếu User chưa có
     private Cart createNewCart(User user) {

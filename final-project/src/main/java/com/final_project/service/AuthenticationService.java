@@ -4,6 +4,7 @@ import com.final_project.dto.request.AuthenticationRequest;
 import com.final_project.dto.request.IntrospectRequest;
 import com.final_project.dto.response.AuthenticationResponse;
 import com.final_project.dto.response.IntrospectResponse;
+import com.final_project.entity.User;
 import com.final_project.exception.AppException;
 import com.final_project.exception.ErrorCode;
 import com.final_project.repository.UserRepository;
@@ -20,9 +21,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.text.ParseException;
 import java.util.Date;
+import java.util.StringJoiner;
 
 @Slf4j
 @Service
@@ -34,6 +37,7 @@ public class AuthenticationService {
     @Value("${jwt.signerKey}")
     protected String SIGNING_KEY ;
 
+    // kiem tra token co hop le hay khong
     public IntrospectResponse introspect(IntrospectRequest request) throws JOSEException, ParseException {
         var token = request.getToken();
         JWSVerifier verifier=new MACVerifier(SIGNING_KEY.getBytes());
@@ -55,26 +59,24 @@ public class AuthenticationService {
         if(!authenticated){
             throw new AppException(ErrorCode.WRONG_PASSWORD);
         }
-        var token = generateToken(request.getUsername());
+        var token = generateToken(user);
         return AuthenticationResponse.builder()
                 .token(token)
                 .authenticated(true)
                 .build();
     }
 
-    private String generateToken(String username){
-        String userId=userRepository.findByUsername(username)
-                .orElseThrow(()->new AppException(ErrorCode.USER_NOT_EXISTED))
-                .getId();
+    // tao token
+    private String generateToken(User user){
         //Header ( thuat toan ma hoa
         JWSHeader header= new JWSHeader(JWSAlgorithm.HS512);
         //Thong tin payload
         JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
-                .subject(username)
+                .subject(user.getUsername())
                 .issuer("final_project")
                 .issueTime(new Date())
                 .expirationTime(new Date(System.currentTimeMillis()+86400000))
-                .claim("userId",userId)
+                .claim("scope",buildScope(user))
                 .build();
         Payload payload = new Payload(claimsSet.toJSONObject());
 
@@ -87,5 +89,14 @@ public class AuthenticationService {
             log.error("Error signing token",e);
             throw new RuntimeException(e);
         }
+    }
+
+    // tao scope
+    private String buildScope(User user){
+        StringJoiner stringJoiner = new StringJoiner(" ");
+        if(!CollectionUtils.isEmpty(user.getRoles())){
+            //user.getRoles().forEach(stringJoiner::add);
+        }
+        return stringJoiner.toString();
     }
 }
